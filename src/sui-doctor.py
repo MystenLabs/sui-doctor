@@ -80,7 +80,7 @@ def parse_output(output, regex):
   match = regex.search(output)
   return float(match.group(1))
 
-MINIMUM_NET_SPEED = 50
+MINIMUM_NET_SPEED = 1000
 
 def check_net_speed():
   # even though this is a python script is is easier to run it as a subprocess
