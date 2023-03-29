@@ -11,7 +11,7 @@ from spinner import Spinner
 def script_dir():
   return pathlib.Path(__file__).parent.resolve()
 
-def build_tools():
+def build_tools() -> None:
   dir = script_dir().joinpath("lib")
   subprocess.run(["make"], cwd=dir)
 
