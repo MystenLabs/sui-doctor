@@ -30,7 +30,7 @@ def find_sui_db_dir() -> str:
   # if we get here then we didn't find the sui db
   raise Exception("could not find sui db")
 
-def directory_to_mountpoint(directory):
+def directory_to_mountpoint(directory: str) -> str:
   # get the mountpoint of the directory
   cmd = "findmnt -n -o SOURCE --target {}".format(directory)
   output = subprocess.run(cmd, shell=True, capture_output=True)
