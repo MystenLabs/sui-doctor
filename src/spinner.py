@@ -27,6 +27,5 @@ class Spinner:
         self.spinner_active = False
         self.spinner_thread.join()
         sys.stdout.write('\x1b[D')
-
         sys.stdout.flush()
 
