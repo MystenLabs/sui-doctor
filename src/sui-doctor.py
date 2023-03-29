@@ -3,10 +3,13 @@
 import subprocess
 import re
 import pathlib
-
 from typing import Tuple
 
 from spinner import Spinner
+
+# minimum limits checked by this script
+MINIMUM_NET_SPEED = 1000
+MINIMUM_DISK_READ_SPEED = 1000
 
 def script_dir():
   return pathlib.Path(__file__).parent.resolve()
@@ -83,8 +86,6 @@ def parse_output(output, regex):
   match = regex.search(output)
   return float(match.group(1))
 
-MINIMUM_NET_SPEED = 1000
-
 def check_net_speed():
   # even though this is a python script is is easier to run it as a subprocess
   output = run_command(["./speedtest.py"], "lib/third_party")
@@ -137,8 +138,8 @@ def hdparm():
   disk_read_speed = float(disk_read_speed)
 
   # check if both numbers are above 1000 MB/s
-  if disk_read_speed < 1000 or cached_read_speed < 1000:
-    return (False, output, "disk read speed must be at least 1000 MB/s")
+  if disk_read_speed < MINIMUM_DISK_READ_SPEED or cached_read_speed < MINIMUM_DISK_READ_SPEED:
+    return (False, output, "disk read speed must be at least {} MB/s".format(MINIMUM_DISK_READ_SPEED))
   else:
     return (True, output, None)
 
