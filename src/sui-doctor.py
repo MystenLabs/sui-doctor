@@ -4,6 +4,8 @@ import subprocess
 import re
 import pathlib
 
+from typing import Tuple
+
 from spinner import Spinner
 
 def script_dir():
