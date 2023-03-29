@@ -44,7 +44,7 @@ def directory_to_mountpoint(directory: str) -> str:
 
   return output
 
-def check_clock_synchronization():
+def check_clock_synchronization() -> Tuple[bool, str, str]:
   output = run_command(["./check_time"], "lib/bin")
 
   regex = re.compile("Synchronized:.*yes", re.MULTILINE)
