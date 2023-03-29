@@ -14,7 +14,7 @@ def build_tools():
   subprocess.run(["make"], cwd=dir)
 
 # TODO: ability to pass in sui db dir on command line
-def find_sui_db_dir():
+def find_sui_db_dir() -> str:
   # list of possible locations of the sui db
   possible_locations = [
       "/opt/sui/db",
