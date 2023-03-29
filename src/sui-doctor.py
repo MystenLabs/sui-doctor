@@ -21,6 +21,7 @@ def find_sui_db_dir() -> str:
   possible_locations = [
       "/opt/sui/db",
       "/data/sui/db",
+      "/var/lib/docker/volumes/suidb",
       # insert more locations here
   ]
 
