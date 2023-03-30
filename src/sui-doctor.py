@@ -159,6 +159,11 @@ def check_for_packet_loss():
   # Can just ping 8.8.8.8 to start?
   return (False, "not implemented", None)
 
+def check_for_docker_host_networking():
+  # must check that, if the validator is using docker, that it is using host networking
+  # if they are not running docker, this check is NA
+  return (False, "not implemented", None)
+
 commands = [
     check_clock_synchronization,
     check_net_speed,
@@ -168,6 +173,7 @@ commands = [
     check_ram,
     check_storage_space_for_suidb,
     check_for_packet_loss,
+    check_for_docker_host_networking,
 ]
 
 class bcolors:
