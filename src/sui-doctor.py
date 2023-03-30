@@ -10,6 +10,7 @@ from spinner import Spinner
 # minimum limits checked by this script
 MINIMUM_NET_SPEED = 1000
 MINIMUM_DISK_READ_SPEED = 1000
+MINIMUM_CPU_THREADS = 48
 
 def script_dir():
   return pathlib.Path(__file__).parent.resolve()
@@ -69,7 +70,7 @@ def run_command(cmd, subdir=None):
 
   spinner = Spinner()
   spinner.start()
-  output = subprocess.run(cmd, cwd=cwd, capture_output=True)
+  output = subprocess.run(cmd, cwd=cwd, capture_output=True, shell=True)
   spinner.stop()
 
   # print stderr if there is any
@@ -146,8 +147,9 @@ def hdparm():
 def check_if_sui_db_on_nvme():
   return (False, "not implemented", None)
 
-def check_num_cpus():
-  return (False, "not implemented", None)
+def check_num_cpus() -> Tuple[bool, str, str]:
+  output = run_command(["cat /proc/cpuinfo | grep processor | wc -l"])
+  return (True, output, None) if int(output) >= MINIMUM_CPU_THREADS else (False, output, "48 CPU threads are required")
 
 def check_ram():
   return (False, "not implemented", None)
