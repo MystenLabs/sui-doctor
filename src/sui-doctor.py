@@ -11,6 +11,7 @@ from spinner import Spinner
 MINIMUM_NET_SPEED = 1000
 MINIMUM_DISK_READ_SPEED = 1000
 MINIMUM_CPU_THREADS = 48
+MINIMUM_MEM_TOTAL = 128000000
 
 def script_dir():
   return pathlib.Path(__file__).parent.resolve()
@@ -149,10 +150,11 @@ def check_if_sui_db_on_nvme():
 
 def check_num_cpus() -> Tuple[bool, str, str]:
   output = run_command(["cat /proc/cpuinfo | grep processor | wc -l"])
-  return (True, output, None) if int(output) >= MINIMUM_CPU_THREADS else (False, output, "48 CPU threads are required")
+  return (True, output, None) if int(output) >= MINIMUM_CPU_THREADS else (False, output, "sui-node requires >= 48 CPU threads")
 
-def check_ram():
-  return (False, "not implemented", None)
+def check_ram() -> Tuple[bool, str, str]:
+  output = run_command(["cat /proc/meminfo | grep MemTotal"])
+  return (True, output, None) if int(output.split()[1]) >= MINIMUM_MEM_TOTAL else (False, output, "sui-node requires >= 128G total memory")
 
 def check_storage_space_for_suidb():
   return (False, "not implemented", None)
