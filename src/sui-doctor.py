@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import traceback
 import subprocess
 import re
 import pathlib
@@ -50,7 +51,7 @@ def directory_to_mountpoint(directory: str) -> str:
   return output
 
 def check_clock_synchronization() -> Tuple[bool, str, str]:
-  output = run_command(["./check_time"], "lib/bin")
+  output = run_command("./check_time", "lib/bin")
 
   regex = re.compile("Synchronized:.*yes", re.MULTILINE)
   match = regex.search(output)
@@ -76,7 +77,7 @@ def run_command(cmd, subdir=None):
   # print stderr if there is any
   if output.stderr:
     redln("stderr:")
-    redln(output.stderr)
+    redln(output.stderr.decode("utf-8"))
 
   output = output.stdout.decode("utf-8")
 
@@ -89,7 +90,7 @@ def parse_output(output, regex):
 
 def check_net_speed():
   # even though this is a python script is is easier to run it as a subprocess
-  output = run_command(["./speedtest.py"], "lib/third_party")
+  output = run_command("./speedtest.py", "lib/third_party")
 
   # this command is slow so you can use this output to test the parsing:
 
@@ -123,7 +124,7 @@ def hdparm():
   # get the mount point
   mountpoint = directory_to_mountpoint(sui_db_dir)
 
-  output = run_command(["sudo", "hdparm", "-tT", "--direct", mountpoint])
+  output = run_command("sudo hdparm -tT --direct {}".format(mountpoint))
 
   # the output of hdparm looks like this:
   # /dev/md1:
@@ -148,7 +149,7 @@ def check_if_sui_db_on_nvme():
   return (False, "not implemented", None)
 
 def check_num_cpus() -> Tuple[bool, str, str]:
-  output = run_command(["cat /proc/cpuinfo | grep processor | wc -l"])
+  output = run_command("cat /proc/cpuinfo | grep processor | wc -l")
   return (True, output, None) if int(output) >= MINIMUM_CPU_THREADS else (False, output, "48 CPU threads are required")
 
 def check_ram():
@@ -220,6 +221,7 @@ if __name__ == "__main__":
     try:
       (status, output, detail) = cmd()
     except Exception as e:
+      print(traceback.format_exc())
       (status, output, detail) = (False, "command failed with exception: {}".format(e), "")
 
     if status:
