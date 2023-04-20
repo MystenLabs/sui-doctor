@@ -10,7 +10,7 @@ unsigned long fibonacci(unsigned long n) {
 }
 
 bool benchmark_fibonacci(int iterations) {
-    double const AVERAGE_RUN_TIME = 6.6;
+    double const AVERAGE_RUN_TIME = 6.7;
 
     printf("Running Test 1...\n");
 
