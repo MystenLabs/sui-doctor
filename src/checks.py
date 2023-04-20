@@ -98,6 +98,16 @@ def check_num_cpus() -> Tuple[bool, str, str]:
   output = run_command(["cat /proc/cpuinfo | grep processor | wc -l"])
   return (True, output, None) if int(output) >= MINIMUM_CPU_THREADS else (False, output, "sui-node requires >= 48 CPU threads")
 
+def check_cpu_speed() -> Tuple[bool, str, str]:
+  output = run_command(["./check_cpu_speed"], "lib/bin")
+
+  regex = re.compile("CPU speed check passed:.*yes", re.MULTILINE)
+  match = regex.search(output)
+
+  if match:
+    return (True, output, None)
+  else:
+    return (False, output, "Check for any CPU governors (ex power saver mode) that might throttle the CPU speed\nMake sure minimum CPU requirements are met\n")
 
 def check_ram() -> Tuple[bool, str, str]:
   output = run_command(["cat /proc/meminfo | grep MemTotal"])
