@@ -25,32 +25,8 @@ void benchmark_fibonacci(int iterations) {
     printf("Test 1: average time taken: %f seconds\n", average_time);
 }
 
-unsigned long factorial(unsigned long n) {
-    long x = 1;
-    for (unsigned long i = 1; i < n; i++) {
-        x *= i;
-    }
-    return x;
-}
-
-void benchmark_factorial(int iterations) {
-    printf("\nRunning Test 2...\n");
-
-    // Calculate factorial (single core check)
-    double total_time = 0.0;
-    for (int i = 0; i < iterations; i++) {
-        clock_t start = clock();
-        factorial(100000000);
-        clock_t end = clock();
-        total_time += ((double)(end - start)) / CLOCKS_PER_SEC;
-    }
-    double average_time = total_time / iterations;
-
-    printf("Test 2: average time taken: %f seconds\n", average_time);
-}
-
 void benchmark_gzip(int iterations) {
-    printf("\nRunning Test 3...\n");
+    printf("\nRunning Test 2...\n");
 
     double total_time = 0.0;
     for (int i = 0; i < iterations; i++) {
@@ -63,7 +39,7 @@ void benchmark_gzip(int iterations) {
 
         int status = system("head -1000000 /dev/urandom | gzip > /dev/null");
         if (status == -1) {
-            printf("Test 3: failed to run, will exclude from benchmarking");
+            printf("Test 2: failed to run, will exclude from benchmarking");
             return;
         }
 
@@ -73,18 +49,17 @@ void benchmark_gzip(int iterations) {
     }
     double average_time = total_time / iterations;
 
-    printf("Test 3: average time taken: %f seconds\n", average_time);
+    printf("Test 2: average time taken: %f seconds\n", average_time);
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 4) {
-        printf("Usage: <test_1_iterations> <test_2_iterations> <test_3_iterations>\n");
+    if (argc != 3) {
+        printf("Usage: <test_1_iterations> <test_2_iterations>\n");
         return 1;
     }
 
     benchmark_fibonacci(atoi(argv[1]));
-    benchmark_factorial(atoi(argv[2]));
-    benchmark_gzip(atoi(argv[3]));
+    benchmark_gzip(atoi(argv[2]));
 
     return 0;
 }
