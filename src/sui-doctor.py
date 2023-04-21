@@ -17,6 +17,7 @@ from checks import (
   check_ram,
   check_storage_space_for_suidb,
   check_for_packet_loss,
+  check_cpu_speed
 )
 from utils import (
   bold,
@@ -35,11 +36,11 @@ commands = [
     hdparm,
     check_if_sui_db_on_nvme,
     check_num_cpus,
+    check_cpu_speed,
     check_ram,
     check_storage_space_for_suidb,
     check_for_packet_loss,
 ]
-
 
 def build_tools() -> None:
   dir = script_dir().joinpath("lib")
