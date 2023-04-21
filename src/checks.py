@@ -20,6 +20,7 @@ MINIMUM_CPU_THREADS = 48
 MINIMUM_MEM_TOTAL = 128000000
 MAX_CPU_SPEED_TEST_1_SECONDS = 6.7
 MAX_CPU_SPEED_TEST_2_SECONDS = 0.1
+MAX_CPU_SPEED_TEST_3_SECONDS = 5.7
 
 
 def check_clock_synchronization() -> Tuple[bool, str, str]:
@@ -101,13 +102,15 @@ def check_num_cpus() -> Tuple[bool, str, str]:
   return (True, output, None) if int(output) >= MINIMUM_CPU_THREADS else (False, output, "sui-node requires >= 48 CPU threads")
 
 def check_cpu_speed() -> Tuple[bool, str, str]:
-  output = run_command(["./check_cpu_speed 10 10"], "lib/bin")
+  output = run_command(["./check_cpu_speed 10 10 10"], "lib/bin")
 
   test_1_seconds = parse_output(output, re.compile("Test 1: average time taken: ([0-9.]+) seconds", re.MULTILINE))
   test_2_seconds = parse_output(output, re.compile("Test 2: average time taken: ([0-9.]+) seconds", re.MULTILINE))
+  test_3_seconds = parse_output(output, re.compile("Test 3: average time taken: ([0-9.]+) seconds", re.MULTILINE))
 
   test_1_seconds = float(test_1_seconds)
   test_2_seconds = float(test_2_seconds)
+  test_3_seconds = float(test_3_seconds)
 
   error = ""
 
@@ -116,6 +119,9 @@ def check_cpu_speed() -> Tuple[bool, str, str]:
 
   if test_2_seconds > MAX_CPU_SPEED_TEST_2_SECONDS:
     error = error + "Test 2 FAIL, average time greater than max, {} > {}\n".format(test_2_seconds, MAX_CPU_SPEED_TEST_2_SECONDS)
+
+  if test_2_seconds > MAX_CPU_SPEED_TEST_3_SECONDS:
+    error = error + "Test 3 FAIL, average time greater than max, {} > {}\n".format(test_3_seconds, MAX_CPU_SPEED_TEST_3_SECONDS)
 
   if error == "":
     return (True, output, None)
