@@ -1,6 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
-#include <stdbool.h>
 
 unsigned long fibonacci(unsigned long n) {
     if (n == 0 || n == 1) {
@@ -9,9 +9,7 @@ unsigned long fibonacci(unsigned long n) {
     return fibonacci(n - 1) + fibonacci(n - 2);
 }
 
-bool benchmark_fibonacci(int iterations) {
-    double const AVERAGE_RUN_TIME = 6.7;
-
+void benchmark_fibonacci(int iterations) {
     printf("Running Test 1...\n");
 
     // Calculate fibonacci (single core check)
@@ -24,13 +22,7 @@ bool benchmark_fibonacci(int iterations) {
     }
     double average_time = total_time / iterations;
 
-    if (average_time > AVERAGE_RUN_TIME) {
-        printf("Test 1: average time is higher than expected average %fs > %fs\n", average_time, AVERAGE_RUN_TIME);
-        return false;
-    } else {
-        printf("Test 1: average time taken: %f seconds\n", average_time);
-        return true;
-    }
+    printf("Test 1: average time taken: %f seconds\n", average_time);
 }
 
 unsigned long factorial(unsigned long n) {
@@ -41,9 +33,7 @@ unsigned long factorial(unsigned long n) {
     return x;
 }
 
-bool benchmark_factorial(int iterations) {
-    double const AVERAGE_RUN_TIME = 0.1;
-
+void benchmark_factorial(int iterations) {
     printf("\nRunning Test 2...\n");
 
     // Calculate factorial (single core check)
@@ -56,20 +46,17 @@ bool benchmark_factorial(int iterations) {
     }
     double average_time = total_time / iterations;
 
-    if (average_time > AVERAGE_RUN_TIME) {
-        printf("Test 2: average time is higher than expected average %fs > %fs\n", average_time, AVERAGE_RUN_TIME);
-        return false;
-    } else {
-        printf("Test 2: average time taken: %f seconds\n", average_time);
-        return true;
-    }
+    printf("Test 2: average time taken: %f seconds\n", average_time);
 }
 
-int main() {
-    bool test_1_passed = benchmark_fibonacci(10);
-    bool test_2_passed = benchmark_factorial(20);
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        printf("Usage: <test_1_iterations> <test_2_iterations>\n");
+        return 1;
+    }
 
-    printf("CPU speed check passed: %9s\n", (test_1_passed && test_2_passed) ? "yes" : "no");
+    benchmark_fibonacci(atoi(argv[1]));
+    benchmark_factorial(atoi(argv[2]));
 
     return 0;
 }

@@ -18,6 +18,8 @@ MINIMUM_NET_SPEED = 1000
 MINIMUM_DISK_READ_SPEED = 1000
 MINIMUM_CPU_THREADS = 48
 MINIMUM_MEM_TOTAL = 128000000
+MAX_CPU_SPEED_TEST_1_SECONDS = 6.7
+MAX_CPU_SPEED_TEST_2_SECONDS = 0.1
 
 
 def check_clock_synchronization() -> Tuple[bool, str, str]:
@@ -99,15 +101,26 @@ def check_num_cpus() -> Tuple[bool, str, str]:
   return (True, output, None) if int(output) >= MINIMUM_CPU_THREADS else (False, output, "sui-node requires >= 48 CPU threads")
 
 def check_cpu_speed() -> Tuple[bool, str, str]:
-  output = run_command(["./check_cpu_speed"], "lib/bin")
+  output = run_command(["./check_cpu_speed 10 10"], "lib/bin")
 
-  regex = re.compile("CPU speed check passed:.*yes", re.MULTILINE)
-  match = regex.search(output)
+  test_1_seconds = parse_output(output, re.compile("Test 1: average time taken: ([0-9.]+) seconds", re.MULTILINE))
+  test_2_seconds = parse_output(output, re.compile("Test 2: average time taken: ([0-9.]+) seconds", re.MULTILINE))
 
-  if match:
+  test_1_seconds = float(test_1_seconds)
+  test_2_seconds = float(test_2_seconds)
+
+  error = ""
+
+  if test_1_seconds > MAX_CPU_SPEED_TEST_1_SECONDS:
+    error = "Test 1 FAIL, average time greater than max, {} > {}\n".format(test_1_seconds, MAX_CPU_SPEED_TEST_1_SECONDS)
+
+  if test_2_seconds > MAX_CPU_SPEED_TEST_2_SECONDS:
+    error = error + "Test 2 FAIL, average time greater than max, {} > {}\n".format(test_2_seconds, MAX_CPU_SPEED_TEST_2_SECONDS)
+
+  if error == "":
     return (True, output, None)
   else:
-    return (False, output, "Check for any CPU governors (ex power saver mode) that might throttle the CPU speed\nMake sure minimum CPU requirements are met\n")
+    return (False, output + "\n" + error, "Check for any CPU governors (ex power saver mode) that might throttle the CPU speed\nMake sure minimum CPU requirements are met\n")
 
 def check_ram() -> Tuple[bool, str, str]:
   output = run_command(["cat /proc/meminfo | grep MemTotal"])
