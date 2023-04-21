@@ -37,7 +37,8 @@ void benchmark_gzip(int iterations) {
         struct timespec start, end;
         clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
-        int status = system("head -1000000 /dev/urandom | gzip > /dev/null");
+        // Stress test by generating random data of 256MB and passing to compress.
+        int status = system("head  -c 268435456 /dev/urandom | gzip > /dev/null");
         if (status == -1) {
             printf("Test 2: failed to run, will exclude from benchmarking");
             return;
