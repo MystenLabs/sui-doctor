@@ -2,6 +2,8 @@
 
 import re
 
+import shutil
+
 from typing import Tuple
 
 from utils import (
@@ -128,7 +130,9 @@ def check_ram() -> Tuple[bool, str, str]:
 
 
 def check_storage_space_for_suidb():
-  return (False, "not implemented", None)
+  db_dir = find_sui_db_dir()
+  total, used, free = shutil.disk_usage(db_dir)
+  return True, "Storage space for sui db located at {} \nTotal: {} GB\nUsed: {} GB\nFree: {} GB".format(db_dir, total/(1<<27), used/(1<<27), free/(1<<27)), None
 
 
 def check_for_packet_loss():
