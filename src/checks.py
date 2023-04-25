@@ -132,7 +132,15 @@ def check_ram() -> Tuple[bool, str, str]:
 def check_storage_space_for_suidb():
   db_dir = find_sui_db_dir()
   total, used, free = shutil.disk_usage(db_dir)
-  return True, "Storage space for sui db located at {} \nTotal: {} GB\nUsed: {} GB\nFree: {} GB".format(db_dir, total/(1<<27), used/(1<<27), free/(1<<27)), None
+  output = "Storage space for sui db located at {} \nTotal: {} TB\nUsed: {} GB\nFree: {} GB".format(db_dir, total/(1<<40), used/(1<<27), free/(1<<27))
+
+  if free/(1<<27) < 10:
+    return False, output, "Free space left on device is very low"
+
+  if total/(1<<40) < 2:
+    return False, output, "Total space on device is lower than recommended 2 TB"
+
+  return True, output, None
 
 
 def check_for_packet_loss():
