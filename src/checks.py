@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import re
+import pathlib
 
 from typing import Tuple
 
@@ -70,7 +71,7 @@ def hdparm():
   sui_db_dir = find_sui_db_dir()
 
   # get the mount point
-  mountpoint = directory_to_mountpoint(sui_db_dir)
+  mountpoint = pathlib.Path(directory_to_mountpoint(sui_db_dir))
 
   # if mountpoint is attached to nvme-type disk, pass trivially
   if directory_on_nvme(mountpoint):
@@ -103,10 +104,10 @@ def check_if_sui_db_on_nvme():
   sui_db_dir = find_sui_db_dir()
 
   # get the mount point
-  mountpoint = directory_to_mountpoint(sui_db_dir)
+  mountpoint = pathlib.Path(directory_to_mountpoint(sui_db_dir))
 
   # check if mountpoint is attached to nvme-type disk
-  nvme = directory_to_mountpoint(mountpoint)
+  nvme = directory_on_nvme(mountpoint)
   return (nvme, f"sui dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {nvme}", None)
 
 
