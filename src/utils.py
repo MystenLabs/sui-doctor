@@ -81,8 +81,17 @@ def device_path_to_device_info(device_path: pathlib.Path):
 
 
 def directory_to_device_path(dir_path: pathlib.Path):
-    device_ID = dir_path.stat().st_dev
-    return pathlib.Path(f"/dev/block/{device_ID}").resolve()
+  cmd_seg_list = ["df", "--output=source", dir_path]
+  process = subprocess.run(cmd_seg_list, capture_output=True, check=True)
+
+  device_output = process.stdout.decode("utf-8").strip()
+  device_list = device_output.splitlines()
+
+  if len(device_list) < 2:
+      raise RuntimeError(f"could not find device path for {dir_path}")
+  
+  device_path = device_list[1]
+  return pathlib.Path(device_path).resolve()
 
 
 
@@ -90,7 +99,7 @@ def directory_on_nvme(dir_path: pathlib.Path):
   device_path = directory_to_device_path(dir_path)
   device_info = device_path_to_device_info(device_path)
 
-  return device_info["trans"] == "nvme"
+  return device_info["tran"] == "nvme"
 
 
 # TODO: ability to pass in sui db dir on command line
