@@ -106,7 +106,7 @@ def check_if_sui_db_on_nvme():
   mountpoint = directory_to_mountpoint(sui_db_dir)
 
   # check if mountpoint is attached to nvme-type disk
-  nvme = mountpoint_on_nvme(mountpoint)
+  nvme = directory_to_mountpoint(mountpoint)
   return (nvme, f"sui dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {nvme}", None)
 
 
