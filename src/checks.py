@@ -75,7 +75,7 @@ def hdparm():
 
   # if mountpoint is attached to nvme-type disk, pass trivially
   if directory_on_nvme(mountpoint):
-    return (True, f"(SKIPPING check) sui dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {True}", None)
+    return (True, f"(SKIPPING check) sui DB dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {True}", None)
 
   output = run_command(["sudo", "hdparm", "-tT", "--direct", mountpoint])
 
@@ -108,7 +108,7 @@ def check_if_sui_db_on_nvme():
 
   # check if mountpoint is attached to nvme-type disk
   nvme = directory_on_nvme(mountpoint)
-  return (nvme, f"sui dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {nvme}", None)
+  return (nvme, f"sui DB dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {nvme}", None)
 
 
 def check_num_cpus() -> Tuple[bool, str, str]:
