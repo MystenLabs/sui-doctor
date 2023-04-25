@@ -68,7 +68,7 @@ def directory_to_mountpoint(directory: str) -> str:
 
 
 def device_path_to_device_info(device_path: pathlib.Path):
-  cmd_seg_list = ["lsblk", "-JO", device_path.resolve()]
+  cmd_seg_list = ["lsblk", "-JO", device_path.resolve(strict=True)]
   process = subprocess.run(cmd_seg_list, capture_output=True, check=True)
 
   device_info_json = process.stdout.decode("utf-8").strip()
@@ -81,7 +81,7 @@ def device_path_to_device_info(device_path: pathlib.Path):
 
 
 def directory_to_device_path(dir_path: pathlib.Path):
-  cmd_seg_list = ["df", "--output=source", dir_path.resolve()]
+  cmd_seg_list = ["df", "--output=source", dir_path.resolve(strict=True)]
   process = subprocess.run(cmd_seg_list, capture_output=True, check=True)
 
   device_output = process.stdout.decode("utf-8").strip()
