@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import re
+import pathlib
 
 import shutil
 
@@ -8,6 +9,7 @@ from typing import Tuple
 
 from utils import (
     directory_to_mountpoint,
+    directory_on_nvme,
     find_sui_db_dir,
     parse_output,
     run_command,
@@ -69,8 +71,13 @@ def hdparm():
 
   # first find the sui db
   sui_db_dir = find_sui_db_dir()
+
   # get the mount point
-  mountpoint = directory_to_mountpoint(sui_db_dir)
+  mountpoint = pathlib.Path(directory_to_mountpoint(sui_db_dir))
+
+  # if mountpoint is attached to nvme-type disk, pass trivially
+  if directory_on_nvme(mountpoint):
+    return (True, f"(SKIPPING check) sui DB dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {True}", None)
 
   output = run_command(["sudo", "hdparm", "-tT", "--direct", mountpoint])
 
@@ -95,7 +102,15 @@ def hdparm():
 
 
 def check_if_sui_db_on_nvme():
-  return (False, "not implemented", None)
+  # first find the sui db
+  sui_db_dir = find_sui_db_dir()
+
+  # get the mount point
+  mountpoint = pathlib.Path(directory_to_mountpoint(sui_db_dir))
+
+  # check if mountpoint is attached to nvme-type disk
+  nvme = directory_on_nvme(mountpoint)
+  return (nvme, f"sui DB dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {nvme}", None)
 
 
 def check_num_cpus() -> Tuple[bool, str, str]:
