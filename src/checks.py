@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-import re
+import glob
+import os
 import pathlib
-
+import re
 import shutil
 
 from typing import Tuple
@@ -138,6 +139,30 @@ def check_cpu_speed() -> Tuple[bool, str, str]:
     return (True, output, None)
   else:
     return (False, output + "\n" + error, "Check for any CPU governors (ex power saver mode) that might throttle the CPU speed\nMake sure minimum CPU requirements are met\n")
+
+
+def check_cpu_governor() -> Tuple[bool, str, str]:
+    # Define the path to the scaling_governor file
+    path = "/sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
+
+    # Find all files that match the pattern
+    governor_files = [f for f in glob.glob(path) if os.path.isfile(f)]
+
+    # If there are no governor files, return True
+    if not governor_files:
+        return (True, "no governor detected", None)
+
+    # Check each governor file to see if it is set to "performance"
+    for file_path in governor_files:
+        with open(file_path, "r") as f:
+            governor = f.read().strip()
+
+        if governor != "performance":
+            return (False, governor, "CPU governor detected that is not set to performance")
+
+    # If all governor files are set to "performance", return True
+    return (True, governor, None)
+
 
 def check_ram() -> Tuple[bool, str, str]:
   output = run_command(["cat /proc/meminfo | grep MemTotal"])

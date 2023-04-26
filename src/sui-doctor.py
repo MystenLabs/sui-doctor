@@ -17,7 +17,8 @@ from checks import (
   check_ram,
   check_storage_space_for_suidb,
   check_for_packet_loss,
-  check_cpu_speed
+  check_cpu_speed,
+  check_cpu_governor
 )
 from utils import (
   bold,
@@ -40,6 +41,7 @@ commands = [
     check_ram,
     check_storage_space_for_suidb,
     check_for_packet_loss,
+    check_cpu_governor
 ]
 
 def build_tools() -> None:
