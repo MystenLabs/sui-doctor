@@ -130,7 +130,7 @@ def run_command(cmd, subdir=None):
 
   spinner = Spinner()
   spinner.start()
-  process = subprocess.run(cmd, cwd=cwd, capture_output=True, shell=False)
+  process = subprocess.run(["ls", "README.md"], cwd=cwd, capture_output=True, shell=False)
   spinner.stop()
 
   print(f"returncode: {process.returncode}")
