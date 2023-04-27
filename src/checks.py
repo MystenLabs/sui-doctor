@@ -28,7 +28,7 @@ MAX_CPU_SPEED_TEST_2_SECONDS = 6.0
 
 
 def check_clock_synchronization() -> Tuple[bool, str, str]:
-  output = run_command(["./check_time"], "lib/bin")
+  output = run_command("./check_time", "lib/bin")
 
   regex = re.compile("Synchronized:.*yes", re.MULTILINE)
   match = regex.search(output)
@@ -41,7 +41,7 @@ def check_clock_synchronization() -> Tuple[bool, str, str]:
 
 def check_net_speed():
   # even though this is a python script is is easier to run it as a subprocess
-  output = run_command(["./speedtest.py"], "lib/third_party")
+  output = run_command("./speedtest.py", "lib/third_party")
 
   # this command is slow so you can use this output to test the parsing:
 
@@ -80,8 +80,7 @@ def hdparm():
   if directory_on_nvme(mountpoint):
     return (True, f"(SKIPPING check) sui DB dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {True}", None)
 
-  output = run_command(["sudo", "hdparm", "-tT", "--direct", mountpoint])
-  # output = run_command(f"sudo hdparm -tT --direct {mountpoint}")
+  output = run_command(f"sudo hdparm -tT --direct {mountpoint}")
 
   # the output of hdparm looks like this:
   # /dev/md1:
@@ -116,11 +115,11 @@ def check_if_sui_db_on_nvme():
 
 
 def check_num_cpus() -> Tuple[bool, str, str]:
-  output = run_command(["cat /proc/cpuinfo | grep processor | wc -l"])
+  output = run_command("cat /proc/cpuinfo | grep processor | wc -l")
   return (True, output, None) if int(output) >= MINIMUM_CPU_THREADS else (False, output, "sui-node requires >= 48 CPU threads")
 
 def check_cpu_speed() -> Tuple[bool, str, str]:
-  output = run_command(["./check_cpu_speed 10 10"], "lib/bin")
+  output = run_command("./check_cpu_speed 10 10", "lib/bin")
 
   test_1_seconds = parse_output(output, re.compile("Test 1: average time taken: ([0-9.]+) seconds", re.MULTILINE))
   test_2_seconds = parse_output(output, re.compile("Test 2: average time taken: ([0-9.]+) seconds", re.MULTILINE))
@@ -166,7 +165,7 @@ def check_cpu_governor() -> Tuple[bool, str, str]:
 
 
 def check_ram() -> Tuple[bool, str, str]:
-  output = run_command(["cat /proc/meminfo | grep MemTotal"])
+  output = run_command("cat /proc/meminfo | grep MemTotal")
   return (True, output, None) if int(output.split()[1]) >= MINIMUM_MEM_TOTAL else (False, output, "sui-node requires >= 128G total memory")
 
 

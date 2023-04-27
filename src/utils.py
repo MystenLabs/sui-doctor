@@ -53,6 +53,15 @@ def yellowln(text):
 def yellow(text):
   print(bcolors.WARNING + text + bcolors.ENDC, end="")
 
+
+def color_print_ln(color, text):
+  color(text + "\n")
+
+
+def color_print(color, text, end=''):
+  print(color + text + bcolors.ENDC, end=end)
+
+
   
 def directory_to_mountpoint(directory: str) -> str:
   # get the mountpoint of the directory
@@ -122,20 +131,14 @@ def find_sui_db_dir() -> str:
 
 
 # function to run command and start/stop spinner
-def run_command(cmd, subdir=None):
-  if subdir is not None:
-    cwd = script_dir().joinpath(subdir)
-  else:
-    cwd = None
+def run_command(cmd: str, subdir=None):
+  cwd = script_dir() / subdir if subdir is not None else None
 
   spinner = Spinner()
   spinner.start()
-  process = subprocess.run(["ls", "README.md"], cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
-  spinner.stop()
-
+  process = subprocess.run(cmd, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
   print(f"returncode: {process.returncode}")
-  print(f"stdout: {process.stdout}")
-  print(f"stderr: {process.stderr}")
+  spinner.stop()
 
   # print stderr if there is any
   if process.stderr:
