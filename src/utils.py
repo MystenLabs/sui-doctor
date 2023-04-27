@@ -130,15 +130,16 @@ def run_command(cmd, subdir=None):
 
   spinner = Spinner()
   spinner.start()
-  output = subprocess.run(cmd, cwd=cwd, capture_output=True, shell=True)
+  process = subprocess.run(cmd, cwd=cwd, capture_output=True, shell=True)
   spinner.stop()
 
+  print(f"returncode: {process.returncode}")
   # print stderr if there is any
-  if output.stderr:
+  if process.stderr:
     redln("stderr:")
-    redln(output.stderr)
+    redln(process.stderr.decode("utf-8"))
 
-  output = output.stdout.decode("utf-8")
+  output = process.stdout.decode("utf-8")
 
   return output
 
