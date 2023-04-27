@@ -130,16 +130,19 @@ def run_command(cmd, subdir=None):
 
   spinner = Spinner()
   spinner.start()
-  process = subprocess.run(["ls", "README.md"], cwd=cwd, capture_output=True, shell=False)
+  process = subprocess.run(["ls", "README.md"], cwd=cwd, capture_output=True, encoding="utf-8", shell=False)
   spinner.stop()
 
   print(f"returncode: {process.returncode}")
+  print(f"stdout: {process.stdout}")
+  print(f"stderr: {process.stderr}")
+
   # print stderr if there is any
   if process.stderr:
     redln("stderr:")
-    redln(process.stderr.decode("utf-8"))
+    redln(process.stderr)
 
-  output = process.stdout.decode("utf-8")
+  output = process.stdout
 
   return output
 
