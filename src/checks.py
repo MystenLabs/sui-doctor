@@ -177,7 +177,7 @@ def check_storage_space_for_suidb():
   if free/(1<<27) < 10:
     return False, output, "Free space left on device is very low"
 
-  if total/(1<<40) < 2:
+  if total/(1<<40) < 1.5:
     return False, output, "Total space on device is lower than recommended 2 TB"
 
   return True, output, None
