@@ -53,15 +53,6 @@ def yellowln(text):
 def yellow(text):
   print(bcolors.WARNING + text + bcolors.ENDC, end="")
 
-
-def color_print_ln(color, text):
-  color(text + "\n")
-
-
-def color_print(color, text, end=''):
-  print(color + text + bcolors.ENDC, end=end)
-
-
   
 def directory_to_mountpoint(directory: str) -> str:
   # get the mountpoint of the directory
