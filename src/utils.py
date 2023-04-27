@@ -135,9 +135,7 @@ def run_command(cmd: str, subdir=None):
     redln("stderr:")
     redln(process.stderr)
 
-  output = process.stdout
-
-  return output
+  return process.stdout
 
 
 def script_dir():
