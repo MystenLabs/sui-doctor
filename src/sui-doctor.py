@@ -35,7 +35,6 @@ commands = [
     check_clock_synchronization,
     check_net_speed,
     hdparm,
-    # check_if_sui_db_on_nvme, # There is NO value to this check
     check_num_cpus,
     check_cpu_speed,
     check_ram,
