@@ -123,7 +123,7 @@ def find_sui_db_dir() -> str:
 
 # function to run command and start/stop spinner
 def run_command(cmd: str, subdir=None):
-  cwd = script_dir() / subdir if subdir is not None else None
+  cwd = script_dir() / subdir if subdir else None
 
   spinner = Spinner()
   spinner.start()
