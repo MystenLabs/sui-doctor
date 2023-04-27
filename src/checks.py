@@ -80,7 +80,8 @@ def hdparm():
   if directory_on_nvme(mountpoint):
     return (True, f"(SKIPPING check) sui DB dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {True}", None)
 
-  output = run_command(["sudo", "hdparm", "-tT", "--direct", mountpoint])
+  # output = run_command(["sudo", "hdparm", "-tT", "--direct", mountpoint])
+  output = run_command(f"sudo hdparm -tT --direct {mountpoint}")
 
   # the output of hdparm looks like this:
   # /dev/md1:
