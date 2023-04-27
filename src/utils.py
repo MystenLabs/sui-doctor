@@ -137,7 +137,6 @@ def run_command(cmd: str, subdir=None):
   spinner = Spinner()
   spinner.start()
   process = subprocess.run(cmd, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
-  print(f"returncode: {process.returncode}")
   spinner.stop()
 
   # print stderr if there is any
@@ -156,4 +155,6 @@ def script_dir():
 
 def parse_output(output, regex):
   match = regex.search(output)
+  if not match:
+    raise ValueError(f"No match found for regex pattern: {regex}")
   return float(match.group(1))

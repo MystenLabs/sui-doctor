@@ -88,7 +88,7 @@ def hdparm():
   # Timing O_DIRECT disk reads: 5116 MB in  3.00 seconds = 1705.24 MB/sec
   #
   # parse out the cached and disk read speeds using regexes
-  cached_read_speed = parse_output(output, re.compile("Timing O_DIRECT cached reads:.*= ([0-9.]+) MB/sec", re.MULTILINE))
+  cached_read_speed = parse_output("bhuiubi", re.compile("Timing O_DIRECT cached reads:.*= ([0-9.]+) MB/sec", re.MULTILINE))
   disk_read_speed = parse_output(output, re.compile("Timing O_DIRECT disk reads:.*= ([0-9.]+) MB/sec", re.MULTILINE))
 
   # convert to numbers
