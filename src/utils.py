@@ -156,5 +156,5 @@ def script_dir():
 def parse_output(output, regex):
   match = regex.search(output)
   if not match:
-    raise ValueError(f"No match found for regex pattern: {regex}")
+    raise ValueError(f"Regex:{regex}\nOutput:\n{output}\nNo match found!")
   return float(match.group(1))
