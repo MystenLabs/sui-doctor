@@ -3,6 +3,8 @@
 import traceback
 import subprocess
 import pathlib
+import logging
+import json
 
 from typing import Tuple
 
@@ -50,15 +52,21 @@ def build_tools() -> None:
 
 # main
 if __name__ == "__main__":
+  logging.basicConfig(filename="sui-doctor.log", encoding="utf8", level=logging.DEBUG, filemode="w")
   boldln("building tools...")
   build_tools()
 
   for cmd in commands:
+    logging.info("Running check: {}".format(cmd.__name__))
     bold("\nRunning command: {}".format(cmd.__name__))
 
     try:
       (status, output, detail) = cmd()
+      logging.info("status: " + str(status))
+      logging.info("output: " + json.dumps(output))
+      logging.info("detail: " + json.dumps(detail))
     except Exception as e:
+      logging.info("command failed: " + json.dumps(traceback.format_exc()))
       print(traceback.format_exc())
       (status, output, detail) = (False, "command failed with exception: {}".format(e), "")
 
