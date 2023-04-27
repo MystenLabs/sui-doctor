@@ -69,14 +69,16 @@ def check_net_speed():
 
 def hdparm():
   # use hdparm to check the disk speed
-  sui_dir = "/"
+
+  # first find the sui db
+  sui_db_dir = find_sui_db_dir()
 
   # get the mount point
-  mountpoint = pathlib.Path(directory_to_mountpoint(sui_dir))
+  mountpoint = pathlib.Path(directory_to_mountpoint(sui_db_dir))
 
   # if mountpoint is attached to nvme-type disk, pass trivially
   if directory_on_nvme(mountpoint):
-    return (True, f"(SKIPPING check) dir: {sui_dir}; mountpoint: {mountpoint}; nvme: {True}", None)
+    return (True, f"(SKIPPING check) sui DB dir: {sui_db_dir}; mountpoint: {mountpoint}; nvme: {True}", None)
 
   output = run_command(f"sudo hdparm -tT --direct {mountpoint}")
 
@@ -168,7 +170,8 @@ def check_ram() -> Tuple[bool, str, str]:
 
 
 def check_storage_space_for_suidb():
-  total, used, free = shutil.disk_usage("/")
+  db_dir = find_sui_db_dir()
+  total, used, free = shutil.disk_usage(db_dir)
   output = "Storage space for sui db located at {} \nTotal: {} TB\nUsed: {} GB\nFree: {} GB".format(db_dir, total/(1<<40), used/(1<<27), free/(1<<27))
 
   if free/(1<<27) < 10:
