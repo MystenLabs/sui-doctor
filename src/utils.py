@@ -122,25 +122,20 @@ def find_sui_db_dir() -> str:
 
 
 # function to run command and start/stop spinner
-def run_command(cmd, subdir=None):
-  if subdir is not None:
-    cwd = script_dir().joinpath(subdir)
-  else:
-    cwd = None
+def run_command(cmd: str, subdir=None):
+  cwd = script_dir() / subdir if subdir else None
 
   spinner = Spinner()
   spinner.start()
-  output = subprocess.run(cmd, cwd=cwd, capture_output=True, shell=True)
+  process = subprocess.run(cmd, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
   spinner.stop()
 
   # print stderr if there is any
-  if output.stderr:
+  if process.stderr:
     redln("stderr:")
-    redln(output.stderr)
+    redln(process.stderr)
 
-  output = output.stdout.decode("utf-8")
-
-  return output
+  return process.stdout
 
 
 def script_dir():
@@ -149,4 +144,6 @@ def script_dir():
 
 def parse_output(output, regex):
   match = regex.search(output)
+  if not match:
+    raise ValueError(f"RegexError\nRegex: {regex}\nOutput:\n{output}\nThe regex pattern could not be found in the output!")
   return float(match.group(1))

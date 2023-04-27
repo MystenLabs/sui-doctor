@@ -35,12 +35,11 @@ commands = [
     check_clock_synchronization,
     check_net_speed,
     hdparm,
-    check_if_sui_db_on_nvme,
     check_num_cpus,
     check_cpu_speed,
     check_ram,
     check_storage_space_for_suidb,
-    check_for_packet_loss,
+    # check_for_packet_loss,
     check_cpu_governor
 ]
 
