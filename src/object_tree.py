@@ -21,7 +21,7 @@ def get_object_graph(obj, visited=None):
         visited = set()
 
     if id(obj) in visited:
-        return f"CYCLE({obj})"
+        return str(obj)
 
     visited.add(id(obj))
 
