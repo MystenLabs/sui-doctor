@@ -5,6 +5,7 @@ import re
 import pathlib
 import os
 import json
+import logging
 
 from spinner import Spinner
 
@@ -53,7 +54,6 @@ def yellowln(text):
 def yellow(text):
   print(bcolors.WARNING + text + bcolors.ENDC, end="")
 
-  
 def directory_to_mountpoint(directory: str) -> str:
   # get the mountpoint of the directory
   cmd = "findmnt -n -o SOURCE --target {}".format(directory)
@@ -125,6 +125,9 @@ def find_sui_db_dir() -> str:
 def run_command(cmd: str, subdir=None):
   cwd = script_dir() / subdir if subdir else None
 
+  logging.debug("-- run_command: " + cmd)
+  logging.debug("-- -- cwd: " + str(cwd))
+
   spinner = Spinner()
   spinner.start()
   process = subprocess.run(cmd, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
@@ -134,6 +137,9 @@ def run_command(cmd: str, subdir=None):
   if process.stderr:
     redln("stderr:")
     redln(process.stderr)
+
+  logging.debug("-- -- stdout: " + json.dumps(process.stdout))
+  logging.debug("-- -- stderr: " + json.dumps(process.stderr))
 
   return process.stdout
 
