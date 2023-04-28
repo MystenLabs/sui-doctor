@@ -20,10 +20,10 @@ def get_object_graph(obj, visited=None):
     if visited is None:
         visited = set()
 
-    if obj in visited:
+    if id(obj) in visited:
         return f"CYCLE({obj})"
 
-    visited.add(obj)
+    visited.add(id(obj))
 
     if isinstance(obj, COLLECTION_TYPES):
         return [get_object_graph(item, visited) for item in obj]
@@ -32,8 +32,8 @@ def get_object_graph(obj, visited=None):
     elif hasattr(obj, '__dict__'):  # Custom object type
         return {key: get_object_graph(value, visited) for key, value in vars(obj).items() if not callable(value)}
     else:
-        assert isinstance(obj, PRIMITIVE_TYPES)
-        return obj
+        return str(obj)
+
 
 def object_to_json(obj):
     """
