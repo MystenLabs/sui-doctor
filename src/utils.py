@@ -56,22 +56,20 @@ def yellow(text):
 
 def directory_to_mountpoint(directory: str) -> str:
   # get the mountpoint of the directory
-  cmd = "findmnt -n -o SOURCE --target {}".format(directory)
-  output = subprocess.run(cmd, shell=True, capture_output=True)
-  output = output.stdout.decode("utf-8").strip()
+  cmd = f"findmnt -n -o SOURCE --target {directory}"
+  output = run_command(cmd).strip()
 
   # if the output is empty then we didn't find a mountpoint
-  if output == "":
-    raise Exception("could not find mountpoint for {}".format(directory))
+  if not output:
+    raise Exception(f"could not find mountpoint for {directory}")
 
   return output
 
 
 def device_path_to_device_info(device_path: pathlib.Path):
-  cmd_seg_list = ["lsblk", "-JO", device_path.resolve(strict=True)]
-  process = subprocess.run(cmd_seg_list, capture_output=True, check=True)
+  device_path = device_path.resolve(strict=True)
 
-  device_info_json = process.stdout.decode("utf-8").strip()
+  device_info_json = run_command(f"lsblk -JO {device_path}", check=True).strip()
   device_info_list = json.loads(device_info_json)["blockdevices"]
 
   if device_info_list:
@@ -81,10 +79,9 @@ def device_path_to_device_info(device_path: pathlib.Path):
 
 
 def directory_to_device_path(dir_path: pathlib.Path):
-  cmd_seg_list = ["df", "--output=source", dir_path.resolve(strict=True)]
-  process = subprocess.run(cmd_seg_list, capture_output=True, check=True)
+  dir_path = dir_path.resolve(strict=True)
 
-  device_output = process.stdout.decode("utf-8").strip()
+  device_output = run_command(f"df --output=source {dir_path}", check=True).strip()
   device_list = device_output.splitlines()
 
   if len(device_list) < 2:
@@ -148,7 +145,7 @@ def find_sui_db_dir_impl() -> str:
 
 
 # function to run command and start/stop spinner
-def run_command(cmd: str, subdir=None):
+def run_command(cmd: str, check=False, subdir=None):
   cwd = script_dir() / subdir if subdir else None
 
   logging.debug("-- run_command: " + cmd)
@@ -156,7 +153,7 @@ def run_command(cmd: str, subdir=None):
 
   spinner = Spinner()
   spinner.start()
-  process = subprocess.run(cmd, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
+  process = subprocess.run(cmd, check=check, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
   spinner.stop()
 
   # print stderr if there is any

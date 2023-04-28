@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import traceback
-import subprocess
 import pathlib
 import logging
 import json
@@ -30,6 +29,7 @@ from utils import (
   redln,
   yellowln,
   script_dir,
+  run_command,
 )
 
 
@@ -46,8 +46,7 @@ commands = [
 ]
 
 def build_tools() -> None:
-  dir = script_dir().joinpath("lib")
-  subprocess.run(["make"], cwd=dir)
+  run_command("make", "lib")
 
 
 # main
