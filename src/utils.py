@@ -101,10 +101,36 @@ def directory_on_nvme(dir_path: pathlib.Path):
 
   return device_info["tran"] == "nvme"
 
+CACHED_SUIDB_DIR = None
 
 # TODO: ability to pass in sui db dir on command line
 def find_sui_db_dir() -> str:
-  # list of possible locations of the sui db
+  global CACHED_SUIDB_DIR
+  if not CACHED_SUIDB_DIR:
+    CACHED_SUIDB_DIR = find_sui_db_dir_impl()
+  return CACHED_SUIDB_DIR
+
+def find_sui_db_dir_impl() -> str:
+  # look for a running sui node and use its config path
+  output = run_command(f"ps ax | grep 'sui-nod[e]' | grep -o '[-]-config-path [^ ]*' | cut -d' ' -f2")
+  if output:
+    # open the config file, search for a line that starts with 'db-path:'
+    config_path = output.strip()
+    logging.debug(f"-- found sui node config path: {config_path}")
+    config_path = pathlib.Path(config_path).resolve(strict=True)
+    with open(config_path, "r") as f:
+      for line in f:
+        if line.startswith("db-path:"):
+          sui_db_dir = line.split(":", 1)[1].strip()
+          logging.debug(f"-- found sui db dir: {sui_db_dir}")
+          return sui_db_dir
+
+  # search for it with find
+  output = run_command("find / -maxdepth 6 -type d -name authorities_db 2> /dev/null | head -1")
+  if output:
+    return output.strip()
+
+  # as a last resort, try some possible known locations of the sui db
   possible_locations = [
       "/opt/sui/db",
       "/data/sui/db",
