@@ -6,6 +6,7 @@ import pathlib
 import os
 import json
 import logging
+import functools
 
 from spinner import Spinner
 
@@ -170,6 +171,7 @@ def script_dir():
   return pathlib.Path(__file__).parent.resolve()
   
 
+@functools.lru_cache
 def parse_output(output, regex):
   match = regex.search(output)
   if not match:
