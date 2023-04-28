@@ -56,6 +56,7 @@ def yellowln(text):
 def yellow(text):
   print(bcolors.WARNING + text + bcolors.ENDC, end="")
 
+
 def directory_to_mountpoint(directory: str) -> str:
   # get the mountpoint of the directory
   output = run_command(f"findmnt -n -o SOURCE --target {directory}").strip()
@@ -92,12 +93,12 @@ def directory_to_device_path(dir_path: pathlib.Path):
   return pathlib.Path(device_path).resolve()
 
 
-
 def directory_on_nvme(dir_path: pathlib.Path):
   device_path = directory_to_device_path(dir_path)
   device_info = device_path_to_device_info(device_path)
 
   return device_info["tran"] == "nvme"
+
 
 CACHED_SUIDB_DIR = None
 
@@ -145,6 +146,11 @@ def find_sui_db_dir_impl() -> str:
   raise Exception("could not find sui db")
 
 
+@capture_function_invocation(output='subprocess.log')
+def subprocess_runner(*args, **kwargs):
+  return subprocess.run(*args, **kwargs)
+
+
 # function to run command and start/stop spinner
 def run_command(cmd: str, subdir=None, *, check=False):
   cwd = script_dir() / subdir if subdir else None
@@ -154,7 +160,7 @@ def run_command(cmd: str, subdir=None, *, check=False):
 
   spinner = Spinner()
   spinner.start()
-  process = subprocess.run(cmd, check=check, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
+  process = subprocess_runner(cmd, check=check, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
   spinner.stop()
 
   # print stderr if there is any
