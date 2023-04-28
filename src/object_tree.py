@@ -21,7 +21,7 @@ def get_object_graph(obj, visited=None):
         visited = set()
 
     if id(obj) in visited:
-        return str(obj)
+        return json.loads(str(obj))
 
     visited.add(id(obj))
 
@@ -32,7 +32,7 @@ def get_object_graph(obj, visited=None):
     elif hasattr(obj, '__dict__'):  # Custom object type
         return {key: get_object_graph(value, visited) for key, value in vars(obj).items() if not callable(value)}
     else:
-        return str(obj)
+        return json.loads(str(obj))
 
 
 def object_to_json(obj):
