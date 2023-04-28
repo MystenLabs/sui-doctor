@@ -6,11 +6,19 @@ COLLECTION_TYPES = (list, set, tuple)
 MAP_TYPES = (dict,)
 
 
+# def hack_load(val):
+#   pre_wrapper = {"val": str(val)}
+#   print(json.dumps(pre_wrapper))
+#   post_wrapper = json.loads(json.dumps(pre_wrapper))
+#   return post_wrapper['val']
+
+
 def hack_load(val):
-  pre_wrapper = {"val": str(val)}
-  print(json.dumps(pre_wrapper))
-  post_wrapper = json.loads(json.dumps(pre_wrapper))
-  return post_wrapper['val']
+  val = str(val)
+  try:
+    return json.loads(val)
+  except Exception:
+    return val
 
 
 def get_object_graph(obj, visited=None):
