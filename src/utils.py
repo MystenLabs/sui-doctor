@@ -56,8 +56,7 @@ def yellow(text):
 
 def directory_to_mountpoint(directory: str) -> str:
   # get the mountpoint of the directory
-  cmd = f"findmnt -n -o SOURCE --target {directory}"
-  output = run_command(cmd).strip()
+  output = run_command(f"findmnt -n -o SOURCE --target {directory}").strip()
 
   # if the output is empty then we didn't find a mountpoint
   if not output:
@@ -145,7 +144,7 @@ def find_sui_db_dir_impl() -> str:
 
 
 # function to run command and start/stop spinner
-def run_command(cmd: str, check=False, subdir=None):
+def run_command(cmd: str, subdir=None, *, check=False):
   cwd = script_dir() / subdir if subdir else None
 
   logging.debug("-- run_command: " + cmd)
