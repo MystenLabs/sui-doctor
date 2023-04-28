@@ -3,6 +3,9 @@ import inspect
 from dataclasses import dataclass
 from functools import wraps
 
+from object_tree import object_to_json
+
+
 @dataclass(frozen=True)
 class FunctionInvocation:
     """
@@ -88,6 +91,6 @@ def log_function_invocation(output: Union[str, IO[str]], function, args, kwargs,
                 exception=exception
             )
 
-            stream.write(str(invocation) + '\n')
+            stream.write(object_to_json(invocation) + '\n')
     except Exception as exc:
         print(f"Error capturing FunctionInvocation: {exc}")
