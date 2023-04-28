@@ -6,6 +6,13 @@ COLLECTION_TYPES = (list, set, tuple)
 MAP_TYPES = (dict,)
 
 
+def hack_load(val):
+  pre_wrapper = {"val": str(val)}
+  print(json.dumps(pre_wrapper))
+  post_wrapper = json.loads(json.dumps(pre_wrapper))
+  return post_wrapper['val']
+
+
 def get_object_graph(obj, visited=None):
     """
     Recursively traverses the object graph/tree of an object and returns a JSON-serializable representation.
@@ -21,7 +28,7 @@ def get_object_graph(obj, visited=None):
         visited = set()
 
     if id(obj) in visited:
-        return json.loads(str(obj))
+        return hack_load(obj)
 
     visited.add(id(obj))
 
@@ -32,7 +39,7 @@ def get_object_graph(obj, visited=None):
     elif hasattr(obj, '__dict__'):  # Custom object type
         return {key: get_object_graph(value, visited) for key, value in vars(obj).items() if not callable(value)}
     else:
-        return json.loads(str(obj))
+        return hack_load(obj)
 
 
 def object_to_json(obj):
