@@ -9,6 +9,7 @@ import logging
 import functools
 
 from spinner import Spinner
+from invocation import capture_function_invocation
 
 
 class bcolors:
@@ -172,6 +173,7 @@ def script_dir():
   
 
 @functools.lru_cache
+@capture_function_invocation(output="invocation.log")
 def parse_output(output, regex):
   match = regex.search(output)
   if not match:
