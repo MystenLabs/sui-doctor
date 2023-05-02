@@ -146,8 +146,8 @@ def find_sui_db_dir_impl() -> str:
   raise Exception("could not find sui db")
 
 
-@capture_function_invocation(output='subprocess.log')
-def subprocess_runner(*args, **kwargs):
+@capture_function_invocation(output='subprocess.json.log')
+def subprocess_run(*args, **kwargs):
   return subprocess.run(*args, **kwargs)
 
 
@@ -160,7 +160,7 @@ def run_command(cmd: str, subdir=None, *, check=False):
 
   spinner = Spinner()
   spinner.start()
-  process = subprocess_runner(cmd, check=check, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
+  process = subprocess_run(cmd, check=check, cwd=cwd, capture_output=True, encoding="utf-8", shell=True)
   spinner.stop()
 
   # print stderr if there is any
@@ -179,7 +179,7 @@ def script_dir():
   
 
 @functools.lru_cache
-@capture_function_invocation(output="invocation.log")
+@capture_function_invocation(output="regex-output.json.log")
 def parse_output(output, regex):
   match = regex.search(output)
   if not match:
