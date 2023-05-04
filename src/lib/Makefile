@@ -9,7 +9,7 @@ EXES=$(patsubst $(SRCDIR)/%.c,$(BINDIR)/%,$(SRCS))
 all: $(EXES)
 
 $(BINDIR)/%: $(SRCDIR)/%.c | $(BINDIR)
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -O3 -o $@ $<
 
 $(BINDIR):
 	mkdir -p $(BINDIR)
