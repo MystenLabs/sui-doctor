@@ -17,6 +17,8 @@ from checks import (
   check_num_cpus,
   check_ram,
   check_storage_space_for_suidb,
+  check_rmem_max,
+  check_wmem_max,
   check_for_packet_loss,
   check_cpu_speed,
   check_cpu_governor
@@ -41,6 +43,8 @@ commands = [
     check_cpu_speed,
     check_ram,
     check_storage_space_for_suidb,
+    check_rmem_max,
+    check_wmem_max,
     # check_for_packet_loss,
     check_cpu_governor
 ]

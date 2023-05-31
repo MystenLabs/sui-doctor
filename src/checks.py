@@ -23,6 +23,8 @@ MINIMUM_NET_SPEED = 1000
 MINIMUM_DISK_READ_SPEED = 1000
 MINIMUM_CPU_THREADS = 48
 MINIMUM_MEM_TOTAL = 128000000
+MINIMUM_RMEM_MAX = 104857600
+MINIMUM_WMEM_MAX = 104857600
 MAX_CPU_SPEED_TEST_1_SECONDS = 3.5
 MAX_CPU_SPEED_TEST_2_SECONDS = 6.0
 
@@ -181,6 +183,16 @@ def check_storage_space_for_suidb():
     return False, output, "Total space on device is lower than recommended 2 TB"
 
   return True, output, None
+
+
+def check_rmem_max():
+  output = run_command("cat /proc/sys/net/core/rmem_max")
+  return (True, output, None) if int(output) >= MINIMUM_RMEM_MAX else (False, output, "for best network performance, increase maximum socket receive buffer size with `sysctl -w net.core.rmem_max=104857600`")
+
+
+def check_wmem_max():
+  output = run_command("cat /proc/sys/net/core/wmem_max")
+  return (True, output, None) if int(output) >= MINIMUM_WMEM_MAX else (False, output, "for best network performance, increase maximum socket send buffer size with `sysctl -w net.core.wmem_max=104857600`")
 
 
 def check_for_packet_loss():
